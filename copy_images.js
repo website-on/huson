@@ -3,15 +3,10 @@ const path = require('path');
 
 const dir = 'd:/منصة/spedia-clone';
 
-const imagesToCopy = [
-    'media__1778533849854.jpg',
-    'media__1778533849789.jpg',
-    'media__1778533849822.jpg',
-    'school_whiteboard_1778535241093.png',
-    'media__1778533849766.jpg'
-];
+const sourceDir = 'C:/Users/Support/.gemini/antigravity/brain/91e12b0c-f413-496c-97ac-aa0bab699621';
 
-const sourceDir = 'C:/Users/Support/.gemini/antigravity/brain/d8619793-64e7-4de8-9678-f291de3bf923';
+// All JPGs in the brain dir
+const imagesToCopy = fs.readdirSync(sourceDir).filter(f => f.startsWith('media__') && f.endsWith('.jpg'));
 
 imagesToCopy.forEach(img => {
     try {
