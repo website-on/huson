@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة الإدارة - Spedia</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .admin-nav {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            background: #fff;
+            padding: 15px;
+            border-radius: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .admin-nav button {
+            padding: 12px 25px;
+            border: none;
+            background: transparent;
+            color: #6a7c92;
+            cursor: pointer;
+            font-weight: 800;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+
+        .admin-nav button:hover {
+            background: #f4f7fa;
+            color: #132644;
+        }
+
+        .admin-nav button.active {
+            background: linear-gradient(135deg, #12b8c5, #1e3c72);
+            color: #fff;
+            box-shadow: 0 5px 15px rgba(18, 184, 197, 0.3);
+        }
+
+        .admin-section {
+            display: none;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .admin-section.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 700;
+            color: #132644;
+            font-size: 15px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e6ed;
+            border-radius: 12px;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 15px;
+            transition: 0.3s;
+            background: #f8fafc;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #12b8c5;
+            outline: none;
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(18, 184, 197, 0.1);
+        }
+
+        /* Modern Tables */
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 10px;
+            margin-top: 15px;
+        }
+
+        table th {
+            background: transparent;
+            color: #6a7c92;
+            padding: 10px 20px;
+            text-align: right;
+            font-weight: 800;
+            border: none;
+        }
+
+        table td {
+            background: #fff;
+            padding: 15px 20px;
+            text-align: right;
+            border: none;
+            color: #132644;
+            font-weight: 600;
+        }
+
+        table tr td:first-child {
+            border-radius: 0 15px 15px 0;
+            border-right: 5px solid #12b8c5;
+        }
+
+        table tr td:last-child {
+            border-radius: 15px 0 0 15px;
+        }
+
+        table tr {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
+            transition: 0.3s;
+        }
+
+        table tr:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .admin-title {
+            font-size: 24px;
+            font-weight: 900;
+            color: #132644;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 2px solid #f0f4f8;
+            padding-bottom: 15px;
+        }
+
+        .admin-title i {
+            color: #12b8c5;
+        }
+    </style>
+</head>
+
+<body class="dashboard-body" style="background:#f0f4f8;">
+    <div class="container"
+        style="padding:30px; max-width:900px; margin:40px auto; background:#fff; border-radius:15px; box-shadow:0 10px 30px rgba(0,0,0,0.08);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
+            <h1 style="color:var(--primary-color); font-weight:900; font-size:24px;"><i class="fas fa-shield-alt"></i>
+                حصون - لوحة
+                الإدارة العامة</h1>
+            <button onclick="window.location.href='index.html'" class="btn-primary"
+                style="background:#f44336; padding: 10px 20px; font-size: 16px;">خروج
+                للرئيسية</button>
+        </div>
+
+        <div class="admin-nav">
+            <button class="active" onclick="showSection('tab-codes', this)">إدارة الأكواد</button>
+            <button onclick="showSection('tab-users', this)">الطلاب المسجلين</button>
+            <button onclick="showSection('tab-attendance', this)">الحضور والتقييمات</button>
+            <button onclick="showSection('tab-content', this)">المحتوى والكورسات</button>
+            <button onclick="showSection('tab-exams', this)">إضافة امتحانات</button>
+            <button onclick="showSection('tab-results', this)">نتائج الاختبارات</button>
+        </div>
+
+        <div id="tab-codes" class="admin-section active">
+            <h2>إنشاء كود عشوائي جديد</h2>
+            <button onclick="generateCode()" class="btn-primary mt-10">إنشاء كود</button>
+            <h3 class="mt-20">الأكواد الحالية بالنظام</h3>
+            <div style="overflow-x:auto;">
+                <table id="table-codes"></table>
+            </div>
+        </div>
+
+        <div id="tab-users" class="admin-section">
+            <h2>الطلاب المسجلين</h2>
+            <div style="overflow-x:auto;">
+                <table id="table-users"></table>
+            </div>
+        </div>
+
+        <div id="tab-attendance" class="admin-section">
+            <h2>سجل الحضور</h2>
+            <div style="overflow-x:auto; margin-bottom:30px;">
+                <table id="table-attendance"></table>
+            </div>
+
+            <h2>إضافة تقييم للطالب (يظهر في حسابه)</h2>
+            <form onsubmit="addEval(event)">
+                <div class="form-group">
+                    <label>كود الطالب</label>
+                    <input type="text" id="ev-code" required>
+                </div>
+                <div class="form-group">
+                    <label>التقييم أو الملاحظة</label>
+                    <input type="text" id="ev-note" required placeholder="مثال: ممتاز في الفيزياء هذا الأسبوع">
+                </div>
+                <button type="submit" class="btn-primary w-100">إرسال التقييم</button>
+            </form>
+        </div>
+
+        <div id="tab-content" class="admin-section">
+            <h2>إضافة مادة أو كورس</h2>
+            <form onsubmit="addContent(event)">
+                <div class="form-group">
+                    <label>النوع</label>
+                    <select id="ct-type" onchange="
+                        document.getElementById('course-code-container').style.display = this.value === 'course' ? 'block' : 'none';
+                        document.getElementById('yt-container').style.display = this.value === 'course' ? 'block' : 'none';
+                        document.getElementById('img-container').style.display = this.value === 'course' ? 'none' : 'block';
+                        document.getElementById('ct-image').required = this.value === 'book';
+                        document.getElementById('ct-yt').required = this.value === 'course';
+                        ">
+                        <option value="book">كتاب متاح للطلب</option>
+                        <option value="course">كورس واشتراك (مغلق برقم سري - فيديو يوتيوب)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>عنوان المحتوى (اسم الكتاب أو الكورس)</label>
+                    <input type="text" id="ct-title" required placeholder="مثال: المراجعة النهائية">
+                </div>
+                <div class="form-group" id="course-code-container" style="display:none;">
+                    <label>كود التفعيل (كلمة المرور 🔒)</label>
+                    <input type="text" id="ct-course-code" placeholder="مثال: MATH101">
+                </div>
+                <div class="form-group">
+                    <label>الصف الدراسي</label>
+                    <select id="ct-grade">
+                        <option value="1">الصف الأول</option>
+                        <option value="2">الصف الثاني</option>
+                        <option value="10">الصف العاشر</option>
+                        <option value="11">الصف الحادي عشر</option>
+                        <option value="12">الصف الثاني عشر</option>
+                    </select>
+                </div>
+                <div class="form-group" id="img-container">
+                    <label>رفع صورة غلاف (للكتاب فقط)</label>
+                    <input type="file" id="ct-image" accept="image/*" required>
+                </div>
+                <div class="form-group" id="yt-container" style="display:none;">
+                    <label>رابط فيديو يوتيوب (للكورس)</label>
+                    <input type="url" id="ct-yt" placeholder="https://www.youtube.com/watch?v=...">
+                </div>
+                <div class="form-group">
+                    <label>السعر الأساسي (ج.م) - يتحول تلقائيا للباقي</label>
+                    <input type="number" id="ct-price" required>
+                </div>
+                <button type="submit" class="btn-primary w-100">حفظ المحتوى</button>
+            </form>
+        </div>
+
+        <div id="tab-exams" class="admin-section">
+            <h2 class="admin-title"><i class="fas fa-file-signature"></i> إنشاء وتقييم المهام (الامتحانات / الواجبات)
+            </h2>
+            <div style="background:#f9fbfd; padding:30px; border-radius:20px; border:1px solid #e0e6ed;">
+                <form onsubmit="addExam(event)">
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+                        <div class="form-group">
+                            <label><i class="fas fa-layer-group"></i> الصف الدراسي المستهدف</label>
+                            <select id="ex-grade" required>
+                                <option value="1">الصف الأول</option>
+                                <option value="2">الصف الثاني</option>
+                                <option value="10">الصف العاشر</option>
+                                <option value="11">الصف الحادي عشر</option>
+                                <option value="12">الصف الثاني عشر</option>
+                                <option value="12(علمي)">الصف الثاني عشر (علمي)</option>
+                                <option value="12(أدبي)">الصف الثاني عشر (أدبي)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-file-alt"></i> عنوان التكليف</label>
+                            <input type="text" id="ex-title" required placeholder="مثال: امتحان الفيزياء النهائي">
+                        </div>
+                    </div>
+
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+                        <div class="form-group">
+                            <label><i class="fas fa-tags"></i> نوع التكليف</label>
+                            <select id="ex-type" required>
+                                <option value="exam">امتحان نهائي 📝</option>
+                                <option value="quiz">اختبار قصير ⏱️</option>
+                                <option value="homework">تسميع / واجب 📚</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-stopwatch"></i> المدة المسموحة للحل (بالدقائق)</label>
+                            <input type="number" id="ex-time" value="60" required>
+                        </div>
+                    </div>
+
+                    <div style="display:flex; gap:20px;">
+                        <div class="form-group" style="flex:1;">
+                            <label><i class="fas fa-calendar-check"></i> تاريخ ووقت فتح وتفعيل الاختبار</label>
+                            <input type="datetime-local" id="ex-start" required>
+                        </div>
+                        <div class="form-group" style="flex:1;">
+                            <label><i class="fas fa-calendar-times"></i> تاريخ ووقت الانتهاء والإغلاق</label>
+                            <input type="datetime-local" id="ex-end" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-list-ol"></i> بنك الأسئلة (قم ببناء الاختبار تفاعلياً)</label>
+                        <div id="dynamic-questions-container"
+                            style="display:flex; flex-direction:column; gap:15px; margin-bottom:15px;">
+                            <!-- Questions go here -->
+                        </div>
+                        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                            <button type="button" onclick="addQuestionField('mcq')" class="btn-primary"
+                                style="background:#e3f2fd; color:#1976d2; border:1px solid #bbdefb; padding:10px; font-size:14px; flex:1; border-radius:10px; box-shadow:none;"><i
+                                    class="fas fa-list-ul"></i> اختيار من متعدد</button>
+                            <button type="button" onclick="addQuestionField('tf')" class="btn-primary"
+                                style="background:#fce4ec; color:#c2185b; border:1px solid #f8bbd0; padding:10px; font-size:14px; flex:1; border-radius:10px; box-shadow:none;"><i
+                                    class="fas fa-check-circle"></i> صح أم خطأ</button>
+                            <button type="button" onclick="addQuestionField('essay')" class="btn-primary"
+                                style="background:#e8f5e9; color:#388e3c; border:1px solid #c8e6c9; padding:10px; font-size:14px; flex:1; border-radius:10px; box-shadow:none;"><i
+                                    class="fas fa-align-right"></i> سؤال مقالي</button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-primary w-100"
+                        style="padding:15px; font-size:20px; border-radius:15px; background:linear-gradient(135deg, #12b8c5, #0d8a94); box-shadow:0 10px 25px rgba(18,184,197,0.3);"><i
+                            class="fas fa-paper-plane"></i> نشر وتسجيل التكليف بالأنظمة</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="tab-results" class="admin-section">
+            <h2 class="admin-title"><i class="fas fa-chart-line"></i> لوحة المراقبة والتصحيح - سجل الحلول</h2>
+
+            <div
+                style="background:#fff; padding:20px; border-radius:20px; border:1px solid #f0f4f8; margin-bottom:40px; overflow-x:auto;">
+                <table id="table-submitted-exams"></table>
+            </div>
+
+            <div id="grading-modal"
+                style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:20000; justify-content:center; align-items:center;">
+                <div
+                    style="background:#fff; width:90%; max-width:800px; border-radius:20px; padding:30px; max-height:85vh; overflow-y:auto; position:relative; box-shadow:0 20px 50px rgba(0,0,0,0.5);">
+                    <button type="button" onclick="document.getElementById('grading-modal').style.display='none'"
+                        style="position:absolute; top:20px; left:20px; background:#ffebee; color:#f44336; border:none; padding:10px 15px; border-radius:10px; cursor:pointer; font-family:'Tajawal'; font-weight:bold;"><i
+                            class="fas fa-times"></i> إغلاق</button>
+                    <h2 style="margin-bottom:5px; color:#132644; font-weight:900;"><i
+                            class="fas fa-clipboard-check"></i> تصحيح إجابات الطالب</h2>
+                    <p style="color:#0d8a94; font-size:18px; font-weight:bold; margin-bottom:20px;"><i
+                            class="fas fa-user-graduate"></i> الطالب: <span id="grad-student-name"></span></p>
+                    <div id="grad-questions-container"
+                        style="display:flex; flex-direction:column; gap:20px; margin-bottom:30px;"></div>
+                    <button type="button" onclick="submitGrading()" class="btn-primary w-100"
+                        style="padding:15px; font-size:20px; border-radius:15px; background:linear-gradient(135deg, #4caf50, #2e7d32); box-shadow:0 10px 25px rgba(76,175,80,0.3);"><i
+                            class="fas fa-check-double"></i> اعتماد التصحيح وحفظ النتيجة</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        function showSection(id, btn) {
+            document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.admin-nav button').forEach(b => b.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            btn.classList.add('active');
+        }
+
+        function generateCode() {
+            let rnd = Math.floor(1000 + Math.random() * 9000).toString();
+            let codes = JSON.parse(localStorage.getItem('spedia_codes') || '[]');
+            codes.push({ code: rnd, isUsed: false });
+            localStorage.setItem('spedia_codes', JSON.stringify(codes));
+            renderTables();
+        }
+
+        function addEval(e) {
+            e.preventDefault();
+            let evals = JSON.parse(localStorage.getItem('spedia_evaluations') || '[]');
+            evals.push({
+                code: document.getElementById('ev-code').value,
+                note: document.getElementById('ev-note').value,
+                date: new Date().toLocaleDateString('ar-EG')
+            });
+            localStorage.setItem('spedia_evaluations', JSON.stringify(evals));
+            alert('تم الإرسال');
+            e.target.reset();
+        }
+
+        function addContent(e) {
+            e.preventDefault();
+            let type = document.getElementById('ct-type').value;
+            let title = document.getElementById('ct-title').value || 'بدون عنوان';
+            let priceBase = parseInt(document.getElementById('ct-price').value);
+            let grade = document.getElementById('ct-grade').value;
+            let courseCode = document.getElementById('ct-course-code') ? document.getElementById('ct-course-code').value : '';
+
+            let content = JSON.parse(localStorage.getItem('spedia_content') || '[]');
+
+            if (type === 'course') {
+                let ytSrc = document.getElementById('ct-yt').value;
+                if (!ytSrc) return alert('الرجاء إدخال رابط يوتيوب للكورس');
+
+                // Extract Youtube ID
+                let match = ytSrc.match(/(?:youtu\.be\/|youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/);
+                let ytId = match ? match[1] : '';
+                if (!ytId) return alert('رابط يوتيوب غير صالح.');
+
+                let thumb = `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`;
+
+                content.push({
+                    id: Date.now(),
+                    type: type,
+                    grade: grade,
+                    title: title,
+                    courseCode: courseCode,
+                    priceBase: priceBase,
+                    image: thumb,
+                    youtubeUrl: ytSrc,
+                    youtubeId: ytId
+                });
+                localStorage.setItem('spedia_content', JSON.stringify(content));
+                alert('تم إضافة الكورس وإحضار غلاف الفيديو بنجاح!');
+                e.target.reset();
+                document.getElementById('course-code-container').style.display = 'none';
+                document.getElementById('yt-container').style.display = 'none';
+                document.getElementById('img-container').style.display = 'block';
+            } else {
+                let fileInput = document.getElementById('ct-image');
+                if (fileInput.files.length === 0) return alert('يرجى اختيار صورة الغلاف للكتاب');
+                let reader = new FileReader();
+                reader.onload = function (eResult) {
+                    content.push({
+                        id: Date.now(),
+                        type: type,
+                        grade: grade,
+                        title: title,
+                        priceBase: priceBase,
+                        image: eResult.target.result
+                    });
+                    localStorage.setItem('spedia_content', JSON.stringify(content));
+                    alert('تم إضافة الكتاب بنجاح!');
+                    e.target.reset();
+                };
+                reader.readAsDataURL(fileInput.files[0]);
+            }
+        }
+
+        function addQuestionField(type) {
+            let container = document.getElementById('dynamic-questions-container');
+            let qDiv = document.createElement('div');
+            qDiv.className = 'q-block';
+            qDiv.dataset.type = type;
+            qDiv.style.cssText = "background:#fff; border:1px solid #e0e6ed; padding:15px; border-radius:10px; position:relative; box-shadow:0 3px 10px rgba(0,0,0,0.02);";
+
+            let removeBtn = `<button type="button" onclick="this.parentElement.remove()" style="position:absolute; top:15px; left:15px; background:#ffebee; color:#f44336; border:none; border-radius:8px; width:30px; height:30px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:0.2s;"><i class="fas fa-times"></i></button>`;
+
+            if (type === 'mcq') {
+                qDiv.innerHTML = `
+                    ${removeBtn}
+                    <h4 style="margin-top:0; color:#1976d2; font-weight:800; font-size:16px; margin-bottom:15px;"><i class="fas fa-list-ul"></i> سؤال اختيار من متعدد</h4>
+                    <input type="text" class="q-text" placeholder="اكتب نص السؤال هنا..." style="width:100%; padding:12px; margin-bottom:15px; border:2px solid #e0e6ed; border-radius:8px; font-family:'Tajawal'" required>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                        <input type="text" class="q-opt" placeholder="الخيار الأول (الإجابة الصحيحة)" style="width:100%; padding:10px; border:2px solid #a5d6a7; border-radius:8px; background:#f1f8e9; font-family:'Tajawal'" required>
+                        <input type="text" class="q-opt" placeholder="الخيار الثاني" style="width:100%; padding:10px; border:2px solid #e0e6ed; border-radius:8px; font-family:'Tajawal'" required>
+                        <input type="text" class="q-opt" placeholder="الخيار الثالث" style="width:100%; padding:10px; border:2px solid #e0e6ed; border-radius:8px; font-family:'Tajawal'" required>
+                        <input type="text" class="q-opt" placeholder="الخيار الرابع" style="width:100%; padding:10px; border:2px solid #e0e6ed; border-radius:8px; font-family:'Tajawal'" required>
+                    </div>
+                `;
+            } else if (type === 'tf') {
+                qDiv.innerHTML = `
+                    ${removeBtn}
+                    <h4 style="margin-top:0; color:#c2185b; font-weight:800; font-size:16px; margin-bottom:15px;"><i class="fas fa-check-circle"></i> سؤال صح أو خطأ</h4>
+                    <input type="text" class="q-text" placeholder="اكتب نص العبارة هنا..." style="width:100%; padding:12px; margin-bottom:15px; border:2px solid #e0e6ed; border-radius:8px; font-family:'Tajawal'" required>
+                    <select class="q-tf-answer" style="width:100%; padding:12px; border:2px solid #e0e6ed; border-radius:8px; font-family:'Tajawal'">
+                        <option value="true">الإجابة الصحيحة: العبارة صحيحة</option>
+                        <option value="false">الإجابة الصحيحة: العبارة خاطئة</option>
+                    </select>
+                `;
+            } else if (type === 'essay') {
+                qDiv.innerHTML = `
+                    ${removeBtn}
+                    <h4 style="margin-top:0; color:#388e3c; font-weight:800; font-size:16px; margin-bottom:15px;"><i class="fas fa-align-right"></i> سؤال مقالي (نصي)</h4>
+                    <input type="text" class="q-text" placeholder="اكتب نص السؤال المقالي..." style="width:100%; padding:12px; border:2px solid #e0e6ed; border-radius:8px; font-family:'Tajawal'" required>
+                `;
+            }
+            container.appendChild(qDiv);
+        }
+
+        function addExam(e) {
+            e.preventDefault();
+
+            let questionsList = [];
+            document.querySelectorAll('.q-block').forEach(blk => {
+                let type = blk.dataset.type;
+                let text = blk.querySelector('.q-text').value;
+                if (type === 'mcq') {
+                    let opts = Array.from(blk.querySelectorAll('.q-opt')).map(i => i.value);
+                    questionsList.push({ type: 'mcq', text: text, options: opts });
+                } else if (type === 'tf') {
+                    let ans = blk.querySelector('.q-tf-answer').value;
+                    questionsList.push({ type: 'tf', text: text, answer: ans });
+                } else if (type === 'essay') {
+                    questionsList.push({ type: 'essay', text: text });
+                }
+            });
+
+            if (questionsList.length === 0) {
+                return alert("يرجى إضافة سؤال واحد على الأقل للاختبار عبر الضغط على الأزرار لاختيار نوع السؤال.");
+            }
+
+            let exams = JSON.parse(localStorage.getItem('spedia_exams') || '[]');
+            exams.push({
+                id: Date.now(),
+                grade: document.getElementById('ex-grade').value,
+                title: document.getElementById('ex-title').value,
+                type: document.getElementById('ex-type').value,
+                typeName: document.getElementById('ex-type').options[document.getElementById('ex-type').selectedIndex].text,
+                durationMinutes: document.getElementById('ex-time').value,
+                startDate: document.getElementById('ex-start').value,
+                endDate: document.getElementById('ex-end').value,
+                questionsList: questionsList
+            });
+            localStorage.setItem('spedia_exams', JSON.stringify(exams));
+            alert('تم نشر التكليف وتسجيل الأسئلة بنجاح!');
+            e.target.reset();
+            document.getElementById('dynamic-questions-container').innerHTML = '';
+        }
+
+        let currentGradingSubmission = null;
+        function openGrading(code, title) {
+            let subs = JSON.parse(localStorage.getItem('spedia_submissions') || '[]');
+            let sub = subs.find(s => s.code === code && s.examTitle === title);
+            if (!sub) return;
+
+            let allExams = JSON.parse(localStorage.getItem('spedia_exams') || '[]');
+            let ex = allExams.find(e => e.title === title);
+            if (!ex) return alert('نموذج الأسئلة مفقود (ربما تم تغيير اسم الامتحان).');
+
+            currentGradingSubmission = sub;
+            document.getElementById('grad-student-name').innerText = (sub.name || 'بدون اسم') + ' (كود: ' + code + ')';
+
+            let container = document.getElementById('grad-questions-container');
+            container.innerHTML = '';
+
+            if (ex.questionsList && ex.questionsList.length > 0) {
+                ex.questionsList.forEach((q, idx) => {
+                    let sAns = (sub.answers && sub.answers[idx]) ? sub.answers[idx] : 'لم يُجب (فارغ)';
+                    let qText = typeof q === 'string' ? q : q.text;
+                    let type = typeof q === 'string' ? 'essay' : q.type;
+
+                    let qDiv = document.createElement('div');
+                    qDiv.style.cssText = "padding:20px; border:2px solid #e0e6ed; border-radius:15px; background:#f9fbfd;";
+                    qDiv.innerHTML = `
+                        <p style="font-weight:900; color:#132644; margin-bottom:15px; font-size:18px;">${idx + 1}. ${qText}</p>
+                        <div style="background:#fff; border:1px solid #c2e2e4; border-right:4px solid #12b8c5; padding:15px; border-radius:8px; margin-bottom:15px;">
+                            <p style="margin:0; font-weight:bold; color:#0e9ba6;">إجابة الطالب:</p>
+                            <p style="margin:5px 0 0; color:#132644; font-size:16px;">${sAns}</p>
+                        </div>
+                        ${type === 'mcq' ? `<p style="font-size:14px; color:#388e3c; margin-bottom:10px; font-weight:bold;"><i class="fas fa-check"></i> الإجابة النموذجية المسجلة: ${q.options[0]}</p>` : ''}
+                        ${type === 'tf' ? `<p style="font-size:14px; color:#388e3c; margin-bottom:10px; font-weight:bold;"><i class="fas fa-check"></i> الإجابة النموذجية المسجلة: ${q.answer === 'true' ? 'صحيحة' : 'خاطئة'}</p>` : ''}
+                        
+                        <div style="display:flex; gap:15px; margin-top:15px; background:#fff; padding:10px; border-radius:10px; border:1px solid #eee;">
+                            <label style="cursor:pointer; color:#2e7d32; font-weight:bold; flex:1; text-align:center;"><input type="radio" name="grad_q${idx}" value="1" required> ✔️ صحيحة المستند</label>
+                            <label style="cursor:pointer; color:#d32f2f; font-weight:bold; flex:1; text-align:center;"><input type="radio" name="grad_q${idx}" value="0" required> ❌ خاطئة</label>
+                        </div>
+                    `;
+                    container.appendChild(qDiv);
+                });
+            } else {
+                container.innerHTML = '<p>هذا الاختبار من النظام القديم (لا يحتوي أسئلة مخزنة).</p>';
+            }
+
+            document.getElementById('grading-modal').style.display = 'flex';
+        }
+
+        function submitGrading() {
+            let allExams = JSON.parse(localStorage.getItem('spedia_exams') || '[]');
+            let ex = allExams.find(e => e.title === currentGradingSubmission.examTitle);
+
+            let total = (ex && ex.questionsList) ? ex.questionsList.length : 0;
+            let correct = 0;
+
+            if (total > 0) {
+                for (let i = 0; i < total; i++) {
+                    let checked = document.querySelector(`input[name="grad_q${i}"]:checked`);
+                    if (!checked) return alert('يرجى وضع علامة (صح/خطأ) لجميع أسئلة الطالب قبل الاعتماد!');
+                    if (checked.value === "1") correct++;
+                }
+            } else {
+                // Dummy fallback for older empty questionsList exams
+                correct = parseInt(prompt("أدخل درجة الطالب", "10")) || 0;
+                total = parseInt(prompt("أدخل الدرجة الكلية", "10")) || 1;
+            }
+
+            let percentage = Math.round((correct / total) * 100);
+            let finalGrade = `${correct} / ${total} (${percentage}%)`;
+
+            let results = JSON.parse(localStorage.getItem('spedia_results') || '[]');
+            let existIdx = results.findIndex(r => r.code === currentGradingSubmission.code && r.examTitle === currentGradingSubmission.examTitle);
+            let ro = {
+                code: currentGradingSubmission.code,
+                examTitle: currentGradingSubmission.examTitle,
+                date: new Date().toLocaleDateString('ar-EG'),
+                grade: finalGrade
+            };
+            if (existIdx >= 0) results[existIdx] = ro;
+            else results.push(ro);
+            localStorage.setItem('spedia_results', JSON.stringify(results));
+
+            let subs = JSON.parse(localStorage.getItem('spedia_submissions') || '[]');
+            let sub = subs.find(s => s.code === currentGradingSubmission.code && s.examTitle === currentGradingSubmission.examTitle);
+            if (sub) {
+                sub.status = "تم التصحيح";
+                localStorage.setItem('spedia_submissions', JSON.stringify(subs));
+            }
+
+            alert('تم اعتماد نتيجة الطالب بنجاح: ' + ro.grade);
+            document.getElementById('grading-modal').style.display = 'none';
+            renderTables();
+        }
+
+        function renderTables() {
+            let codes = JSON.parse(localStorage.getItem('spedia_codes') || '[]');
+            let users = JSON.parse(localStorage.getItem('spedia_users') || '[]');
+            let att = JSON.parse(localStorage.getItem('spedia_attendance') || '[]');
+
+            let adminType = sessionStorage.getItem('adminType');
+
+            document.getElementById('table-codes').innerHTML = `<tr><th>الكود</th><th>مستخدم؟</th></tr>` +
+                codes.map(c => `<tr><td style="font-weight:bold;color:var(--primary-color)">${c.code}</td><td style="${c.isUsed ? 'color:red' : 'color:green'}">${c.isUsed ? 'مستخدم' : 'متاح'}</td></tr>`).join('');
+
+            document.getElementById('table-users').innerHTML = `<tr><th>الكود</th><th>الاسم</th><th>الهاتف</th><th>الصف</th></tr>` +
+                users.map(u => `<tr><td style="font-weight:bold">${u.code}</td><td>${u.name}</td><td>${adminType === 'restricted' ? '********' : u.phone}</td><td>الصف ${u.grade}</td></tr>`).join('');
+
+            document.getElementById('table-attendance').innerHTML = `<tr><th>الكود</th><th>الاسم</th><th>التاريخ</th><th>الوقت</th></tr>` +
+                att.map(a => `<tr><td>${a.code}</td><td>${a.name}</td><td>${a.date}</td><td>${a.time}</td></tr>`).join('');
+
+            let subs = JSON.parse(localStorage.getItem('spedia_submissions') || '[]');
+            document.getElementById('table-submitted-exams').innerHTML = `<tr><th>الطالب</th><th>الامتحان المنجز</th><th>وقت التسليم</th><th>الحالة</th><th>تصحيح</th></tr>` +
+                subs.map(s => `<tr>
+                    <td style="font-weight:900; color:#12b8c5;"><i class="fas fa-user-graduate"></i> ${s.name || 'بدون اسم'} (${s.code})</td>
+                    <td style="font-weight:bold; color:#132644;"><i class="fas fa-file-invoice"></i> ${s.examTitle}</td>
+                    <td><i class="far fa-clock"></i> ${s.date}</td>
+                    <td><span style="display:inline-block; padding:5px 12px; border-radius:30px; font-size:12px; font-weight:800; background:${s.status === 'تم التصحيح' ? '#e8f5e9' : '#fff3e0'}; color:${s.status === 'تم التصحيح' ? '#2e7d32' : '#ed6c02'};"><i class="${s.status === 'تم التصحيح' ? 'fas fa-check-double' : 'fas fa-hourglass-half'}"></i> ${s.status}</span></td>
+                    <td>
+                        <button onclick="openGrading('${s.code}', '${s.examTitle}')" style="background:${s.status === 'تم التصحيح' ? '#abb8c3' : 'linear-gradient(135deg, #12b8c5, #0e9ba6)'}; color:#fff; border:none; padding:8px 15px; border-radius:8px; cursor:pointer; font-weight:bold; font-family:'Tajawal'; white-space:nowrap; box-shadow:0 5px 10px rgba(18,184,197,0.2);"><i class="fas fa-search"></i> ${s.status === 'تم التصحيح' ? 'إعادة التصحيح' : 'فتح الإجابات'}</button>
+                    </td>
+                </tr>`).join('');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            let isAdmin = sessionStorage.getItem('isAdmin');
+            if (isAdmin !== 'yes') {
+                window.location.href = 'index.html';
+            } else {
+                renderTables();
+            }
+        });
+    </script>
+</body>
+
+</html>
